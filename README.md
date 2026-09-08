@@ -66,3 +66,43 @@ python server/app.py
 - 오디오 해석 모델(로컬 또는 외부 API) 연동
 - 슬라이드 레이아웃/스타일 개선
 - 이미지 고해상도 렌더링 및 다운로드 기능
+
+
+머신러닝 프로토타입 (추가 기능)
+--------------------------------
+이 프로젝트에는 간단한 특징 기반 학습/예측 엔드포인트가 서버에 추가되어 있습니다. 로컬에서 라벨링된 샘플을 모아 모델을 학습하고 예측할 수 있습니다.
+
+- 요구사항: `server/requirements.txt`에 `scikit-learn`, `joblib`가 추가되었습니다. 서버 가상환경에서 설치하세요.
+
+- 엔드포인트 요약:
+	- `POST /api/feature` : 오디오 파일 업로드와 선택적 `label` 폼 필드로 특징(MFCC)을 추출해 `server/dataset`에 저장합니다.
+	- `POST /api/train` : `server/dataset`에 저장된 라벨된 샘플로 학습을 수행하고 `server/model.joblib`에 모델을 저장합니다.
+	- `POST /api/predict` : 오디오 파일을 업로드하면 학습된 모델로 라벨과 확률을 반환합니다.
+
+예제 사용 순서
+
+1) 샘플 업로드(라벨 포함)
+
+```bash
+# curl 예제: 파일과 라벨을 같이 전송
+curl -X POST -F "file=@/path/to/meow.wav" -F "label=hunger" http://localhost:5000/api/feature
+```
+
+2) 학습 실행
+
+```bash
+curl -X POST http://localhost:5000/api/train
+```
+
+3) 예측(학습된 모델 필요)
+
+```bash
+curl -X POST -F "file=@/path/to/unknown_meow.wav" http://localhost:5000/api/predict
+# 반환 예: {"label":"hunger","probability":0.87}
+```
+
+주의사항
+- 초기 프로토타입은 소규모 데이터·간단 분류기(랜덤포레스트)를 사용합니다. 실서비스용으로 사용하려면 데이터 수집, 검증, 모델 개선(전이학습/CNN 등)이 필요합니다.
+- `server/dataset` 폴더에 저장된 `.npz` 파일이 학습 데이터입니다. 라벨이 없는 샘플은 학습에서 제외됩니다.
+
+원하시면 README에 스크린샷과 CI 배지도 추가해드리겠습니다.
