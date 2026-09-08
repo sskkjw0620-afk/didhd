@@ -1,0 +1,6 @@
+body { background: #f9f9fb; color: #111 }
+button { padding: 6px 10px; border-radius: 4px }
+
+.thumbs { display:flex; gap:8px; }
+.thumb { width:140px }
+
