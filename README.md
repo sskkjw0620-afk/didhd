@@ -19,7 +19,7 @@ npm install
 npm run dev
 ```
 
-3. 브라우저에서 http://localhost:5173 에 접속하세요.
+3. 브라우저에서 https://bine.kdt2025.com 에 접속하세요.
 
 빌드 및 배포
 
